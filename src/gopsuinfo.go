@@ -1,3 +1,6 @@
+/*
+Fed up with learning just by reading the manual, I'll try to code my old psuinfo python script from scratch in Go.
+*/
 package main
 
 import (
