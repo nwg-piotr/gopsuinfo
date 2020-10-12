@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/host"
 )
 
 func cpuGraph(delay *string) string {
@@ -31,11 +32,42 @@ func cpuAvSpeed(delay *string) string {
 		avs = " " + avs
 	}
 	return fmt.Sprintf("%s%%", avs)
+}
 
+func temperatures() string {
+	output := ""
+	vals := make(map[string]int)
+	temps, _ := host.SensorsTemperatures()
+	for _, temp := range temps {
+		if temp.SensorKey == "acpitz_input" {
+			vals["acpitz"] = int(temp.Temperature)
+		}
+		if temp.SensorKey == "k10temp_tdie_input" {
+			vals["k10temp"] = int(temp.Temperature)
+		}
+		if temp.SensorKey == "amdgpu_mem_input" {
+			vals["amdgpu"] = int(temp.Temperature)
+		}
+	}
+	v, exists := vals["k10temp"]
+	if exists {
+		output += fmt.Sprint(v)
+	} else {
+		v, exists := vals["acpitz"]
+		if exists {
+			output += fmt.Sprint(v)
+		}
+	}
+	v, exists = vals["amdgpu"]
+	if exists {
+		output += "|" + fmt.Sprint(v)
+	}
+	output += "℃"
+	return output
 }
 
 func main() {
-	componentsPtr := flag.String("C", "gatmd", `Components: (a)vg CPU load, (f)an speed, (g)rahical bar, (t)emperatures,
+	componentsPtr := flag.String("c", "gatmdu", `Output (c)omponents: (a)vg CPU load, (f)an speed, (g)rahical bar, (t)emperatures,
 	(m)emory, (u)ptime`)
 	cpuDelayPtr := flag.String("delay", "400ms", "CPU measurement delay [timeout]")
 	flag.Parse()
@@ -48,6 +80,9 @@ func main() {
 		}
 		if string(char) == "a" {
 			output += cpuAvSpeed(cpuDelayPtr) + " "
+		}
+		if string(char) == "t" {
+			output += temperatures()
 		}
 	}
 
