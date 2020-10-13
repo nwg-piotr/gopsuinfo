@@ -81,9 +81,9 @@ func uptime(g glyphs) string {
 func memory(g glyphs) string {
 	output := g.glyphMem
 	stats, _ := mem.VirtualMemory()
-	used := math.Round(float64(stats.Used)) / 1073741824
-	total := math.Round(float64(stats.Total)) / 1073741824
-	output += fmt.Sprintf("%.2f", used) + "/" + fmt.Sprintf("%.2f", total) + "GiB"
+	used := math.Round(float64(stats.Used)) / 1048576
+	total := math.Round(float64(stats.Total)) / 1048576
+	output += fmt.Sprintf("%.0f", used) + "/" + fmt.Sprintf("%.0f", total) + "MiB"
 	return output
 }
 
