@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -70,7 +71,7 @@ func uptime(g glyphs) string {
 	if t, e := host.Uptime(); e == nil {
 		hh := t / 3600
 		mm := t % 3600 / 60
-		output += fmt.Sprintf("%d:%d", hh, mm)
+		output += fmt.Sprintf("%02d:%02d", hh, mm)
 	} else {
 		output += "??:??"
 	}
@@ -78,7 +79,6 @@ func uptime(g glyphs) string {
 }
 
 func memory(g glyphs) string {
-	//var gib float64 = 1073741824
 	output := g.glyphMem
 	stats, _ := mem.VirtualMemory()
 	used := math.Round(float64(stats.Used)) / 1073741824
@@ -96,6 +96,19 @@ func listMountpoints() {
 	os.Exit(0)
 }
 
+func diskUsage(paths *string) string {
+	output := ""
+	sliced := strings.Fields(*paths)
+	for _, path := range sliced {
+		usage, _ := disk.Usage(path)
+		used := math.Round(float64(usage.Used)) / 1073741824
+		total := math.Round(float64(usage.Total)) / 1073741824
+		output += fmt.Sprintf("%s:%.1f/%.0f ", path, used, total)
+	}
+	output += "GiB"
+	return output
+}
+
 // Settings for now will store glyphs only
 type glyphs struct {
 	graphCPU    []rune
@@ -106,8 +119,8 @@ type glyphs struct {
 }
 
 func main() {
-	argsWithoutProg := os.Args[1:]
-	for _, arg := range argsWithoutProg {
+	args := os.Args[1:]
+	for _, arg := range args {
 		if arg == "list_mountpoints" {
 			listMountpoints()
 		}
@@ -115,10 +128,11 @@ func main() {
 	// Glyphs below may be replaced, e.g. "MEM:" instead of ""
 	g := glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
 
-	componentsPtr := flag.String("c", "gatmdu",
+	componentsPtr := flag.String("c", "gatmnu",
 		`Output (c)omponents: (a)vg CPU load, (f)an speed, (g)rahical bar, (t)emperatures,
 		(m)emory, (u)ptime`)
 	cpuDelayPtr := flag.String("d", "500ms", "CPU measurement delay [timeout]")
+	pathsPtr := flag.String("p", "/", "Space-separated list of mou(n)tpoints")
 	flag.Parse()
 
 	output := ""
@@ -139,8 +153,8 @@ func main() {
 		if string(char) == "m" {
 			output += memory(g) + " "
 		}
-		if string(char) == "l" {
-			listMountpoints()
+		if string(char) == "n" {
+			output += diskUsage(pathsPtr) + " "
 		}
 	}
 
