@@ -11,6 +11,7 @@ import (
 
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/host"
+	"github.com/shirou/gopsutil/mem"
 )
 
 func cpuGraph(g glyphs, delay *string) string {
@@ -74,6 +75,16 @@ func uptime(g glyphs) string {
 	return output
 }
 
+func memory(g glyphs) string {
+	//var gib float64 = 1073741824
+	output := g.glyphMem
+	stats, _ := mem.VirtualMemory()
+	used := math.Round(float64(stats.Used)) / 1073741824
+	total := math.Round(float64(stats.Total)) / 1073741824
+	output += fmt.Sprintf("%.2f", used) + "/" + fmt.Sprintf("%.2f", total) + "GiB"
+	return output
+}
+
 // Settings for now will store glyphs only
 type glyphs struct {
 	graphCPU    []rune
@@ -107,6 +118,9 @@ func main() {
 		}
 		if string(char) == "u" {
 			output += uptime(g) + " "
+		}
+		if string(char) == "m" {
+			output += memory(g) + " "
 		}
 	}
 
