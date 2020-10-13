@@ -7,9 +7,11 @@ import (
 	"flag"
 	"fmt"
 	"math"
+	"os"
 	"time"
 
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
 )
@@ -85,6 +87,15 @@ func memory(g glyphs) string {
 	return output
 }
 
+func listMountpoints() {
+	partitions, _ := disk.Partitions(true)
+	fmt.Println("List in format: [device] mountpoint")
+	for _, p := range partitions {
+		fmt.Printf("[%s] %s\n", p.Device, p.Mountpoint)
+	}
+	os.Exit(0)
+}
+
 // Settings for now will store glyphs only
 type glyphs struct {
 	graphCPU    []rune
@@ -95,6 +106,12 @@ type glyphs struct {
 }
 
 func main() {
+	argsWithoutProg := os.Args[1:]
+	for _, arg := range argsWithoutProg {
+		if arg == "list_mountpoints" {
+			listMountpoints()
+		}
+	}
 	// Glyphs below may be replaced, e.g. "MEM:" instead of ""
 	g := glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
 
@@ -121,6 +138,9 @@ func main() {
 		}
 		if string(char) == "m" {
 			output += memory(g) + " "
+		}
+		if string(char) == "l" {
+			listMountpoints()
 		}
 	}
 
