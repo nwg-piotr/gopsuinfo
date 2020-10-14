@@ -103,7 +103,7 @@ func diskUsage(paths *string) string {
 		usage, _ := disk.Usage(path)
 		used := math.Round(float64(usage.Used)) / 1073741824
 		total := math.Round(float64(usage.Total)) / 1073741824
-		output += fmt.Sprintf("%s:%.1f/%.0f", path, used, total)
+		output += fmt.Sprintf("%s:%.1f/%.0f ", path, used, total)
 	}
 	output += "GiB"
 	return output
@@ -124,15 +124,17 @@ func main() {
 		if arg == "list_mountpoints" {
 			listMountpoints()
 		}
+		if arg == "-h" {
+			fmt.Println("Use gopsuinfo list_mountpoints to see available mount points.")
+		}
 	}
 	// Glyphs below may be replaced, e.g. "MEM:" instead of ""
 	g := glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
 
 	componentsPtr := flag.String("c", "gatmnu",
-		`Output (c)omponents: (a)vg CPU load, (f)an speed, (g)rahical bar, (t)emperatures,
-		(m)emory, (u)ptime`)
-	cpuDelayPtr := flag.String("d", "500ms", "CPU measurement delay [timeout]")
-	pathsPtr := flag.String("p", "/", "Space-separated list of mou(n)tpoints")
+		`Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar, disk usage by mou(n)tpoints, (t)emperatures, (m)emory, (u)ptime`)
+	cpuDelayPtr := flag.String("d", "450ms", "CPU measurement delay [timeout]")
+	pathsPtr := flag.String("p", "/", "Quotation-delimited, space-separated list of mou(n)tpoints")
 	flag.Parse()
 
 	output := ""
