@@ -1,5 +1,9 @@
-/*
-Fed up with learning just by reading the manual, I'll try to code my old psuinfo python script from scratch in Go.
+/*A gopsutil-based command to display customizable system usage info in a single line
+  Copyright (c) 2020 Piotr Miller
+  e-mail: nwg.piotr@gmail.com
+  Project: https://github.com/nwg-piotr/gopsuinfo
+  License: GPL3
+  gopsutil Copyright (c) 2014, WAKAYAMA Shirou, https://github.com/shirou/gopsutil
 */
 package main
 
