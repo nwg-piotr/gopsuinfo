@@ -79,7 +79,7 @@ func uptime(g glyphs) string {
 }
 
 func memory(g glyphs) string {
-	output := g.glyphMem
+	output := g.glyphMem + " "
 	stats, _ := mem.VirtualMemory()
 	used := math.Round(float64(stats.Used)) / 1048576
 	total := math.Round(float64(stats.Total)) / 1048576
@@ -103,7 +103,7 @@ func diskUsage(paths *string) string {
 		usage, _ := disk.Usage(path)
 		used := math.Round(float64(usage.Used)) / 1073741824
 		total := math.Round(float64(usage.Total)) / 1073741824
-		output += fmt.Sprintf("%s:%.1f/%.0f ", path, used, total)
+		output += fmt.Sprintf("%s:%.1f/%.0f", path, used, total)
 	}
 	output += "GiB"
 	return output
@@ -158,5 +158,5 @@ func main() {
 		}
 	}
 
-	fmt.Println(output)
+	fmt.Println(strings.TrimSpace(output))
 }
