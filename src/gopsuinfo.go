@@ -107,7 +107,7 @@ func diskUsage(paths *string) string {
 		usage, _ := disk.Usage(path)
 		used := math.Round(float64(usage.Used)) / 1073741824
 		total := math.Round(float64(usage.Total)) / 1073741824
-		output += fmt.Sprintf("%s:%.1f/%.0f ", path, used, total)
+		output += fmt.Sprintf("%s:%.1f/%.0f", path, used, total)
 	}
 	output += "GiB"
 	return output
