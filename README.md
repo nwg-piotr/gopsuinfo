@@ -3,6 +3,8 @@
 This project is a Go version of my [psuinfo](https://github.com/nwg-piotr/psuinfo) python script, written for educational purposes, and also for better performance.
 The code only implements these `psuinfo` features which I actually use.
 
+![gopsuinfo-waybar](http://nwg.pl/Lychee/uploads/big/29020400991f20e10272b4c3c65d37c1.png)
+
 The `gopsuinfo` command prints some customisable system usage information in a single line, and is intended to use with text-based panels, like [Waybar](https://github.com/Alexays/Waybar) or [polybar](https://github.com/polybar/polybar).
 
 The program uses the [gopsutil](https://github.com/shirou/gopsutil) package, Copyright (c) 2014, WAKAYAMA Shirou.
@@ -18,10 +20,6 @@ Usage of gopsuinfo:
   -p string
     	Quotation-delimited, space-separated list of mou(n)tpoints (default "/")
 ```
-
-Sample usage:
-
-![gopsuinfo-waybar](http://nwg.pl/Lychee/uploads/big/29020400991f20e10272b4c3c65d37c1.png)
 
 Waybar custom modules:
 
