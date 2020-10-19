@@ -6,3 +6,7 @@ The code only implements these `psuinfo` features which I actually use.
 The `gopsuinfo` command prints some customisable system usage information in a single line, and is intended to use with text-based panels, like [Waybar](https://github.com/Alexays/Waybar) or [polybar](https://github.com/polybar/polybar).
 
 The program uses the [gopsutil](https://github.com/shirou/gopsutil) package, Copyright (c) 2014, WAKAYAMA Shirou.
+
+Sample usage:
+
+![gopsuinfo-waybar](http://nwg.pl/Lychee/uploads/big/29020400991f20e10272b4c3c65d37c1.png)
