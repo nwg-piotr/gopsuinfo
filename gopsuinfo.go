@@ -19,9 +19,11 @@ import (
 	"github.com/shirou/gopsutil/disk"
 	"github.com/shirou/gopsutil/host"
 	"github.com/shirou/gopsutil/mem"
+	"github.com/shirou/gopsutil/net"
 )
 
 var g glyphs
+var path string
 
 func cpuGraph(delay *string) string {
 	bar := ""
@@ -93,6 +95,34 @@ func memory(asIcon bool) string {
 	return output
 }
 
+func traffic(asIcon bool) string {
+	t0, _ := net.IOCounters(false)
+	time.Sleep(time.Second)
+	t1, _ := net.IOCounters(false)
+	ul := math.Round(float64(t1[0].BytesSent - t0[0].BytesSent)) / 1024
+	dl := math.Round(float64(t1[0].BytesRecv - t0[0].BytesRecv)) / 1024
+	if asIcon {
+		icon := net_icon(ul, dl)
+		text := fmt.Sprintf("%.2f", ul) + " " + fmt.Sprintf("%.2f", dl) + " kB/s"
+		return fmt.Sprintf("%s\n%s", icon, text)
+	}
+	return fmt.Sprintf("%.2f", ul) + " / " + fmt.Sprintf("%.2f", dl) + " kB/s"
+}
+
+func net_icon(ul float64, dl float64) string {
+	fname := ""
+	if ul >= 0.01 && dl >= 0.01 {
+		fname = "xfer-b.svg"
+	} else if ul >= 0.01 {
+		fname = "xfer-u.svg"
+	} else if dl >= 0.01 {
+		fname = "xfer-d.svg"
+	} else {
+		fname = "xfer.svg"
+	}
+	return fmt.Sprintf("%s/%s", path, fname)
+}
+
 func listMountpoints() {
 	partitions, _ := disk.Partitions(true)
 	fmt.Println("List in format: [device] mountpoint")
@@ -137,14 +167,16 @@ func main() {
 	g = glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
 
 	componentsPtr := flag.String("c", "gatmnu",
-		`Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar, disk usage by mou(n)tpoints, (t)emperatures, (m)emory, (u)ptime`)
+		`Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar,
+		disk usage by mou(n)tpoints, (t)emperatures,
+		networ(k) traffic, (m)emory, (u)ptime`)
 	iconPtr := flag.String("i", "", "Returns (i)con path and a single component (a, n, t, m, u) value")
 	cpuDelayPtr := flag.String("d", "900ms", "CPU measurement delay [timeout]")
 	pathsPtr := flag.String("p", "/", "Quotation-delimited, space-separated list of mou(n)tpoints")
 	setPtr := flag.Bool("dark", false, "Use dark icon set")
 
 	flag.Parse()
-	path := "/usr/share/gopsuinfo/icons_light"
+	path = "/usr/share/gopsuinfo/icons_light"
 	if *setPtr {
 		path = "/usr/share/gopsuinfo/icons_dark"
 	}
@@ -169,6 +201,8 @@ func main() {
 		} else if *iconPtr == "u" {
 			output += path + "/up.svg\n"
 			output += uptime(true)
+		} else if *iconPtr == "k" {
+			output += traffic(true)
 		}
 	} else {
 		for _, char := range *componentsPtr {
@@ -189,6 +223,9 @@ func main() {
 			}
 			if string(char) == "n" {
 				output += diskUsage(pathsPtr) + " "
+			}
+			if string(char) == "k" {
+				output += traffic(false)
 			}
 		}
 	}
