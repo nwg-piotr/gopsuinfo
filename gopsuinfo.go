@@ -1,5 +1,5 @@
 /*A gopsutil-based command to display customizable system usage info in a single line
-  Copyright (c) 2020 Piotr Miller
+  Copyright (c) 2020-2021 Piotr Miller
   e-mail: nwg.piotr@gmail.com
   Project: https://github.com/nwg-piotr/gopsuinfo
   License: GPL3
@@ -21,7 +21,9 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
-func cpuGraph(g glyphs, delay *string) string {
+var g glyphs
+
+func cpuGraph(delay *string) string {
 	bar := ""
 	duration, _ := time.ParseDuration(*delay)
 	speeds, _ := cpu.Percent(duration, true)
@@ -31,18 +33,18 @@ func cpuGraph(g glyphs, delay *string) string {
 	return bar
 }
 
-func cpuAvSpeed(g glyphs, delay *string) string {
+func cpuAvSpeed(delay *string) string {
 	duration, _ := time.ParseDuration(*delay)
 	avSpeed, _ := cpu.Percent(duration, false)
-	avs := fmt.Sprintf("%.2f", avSpeed[0])
-	if len(avs) < 5 {
-		avs = " " + avs
-	}
-	return fmt.Sprintf("%s%s%%", g.glyphCPU, avs)
+	avs := fmt.Sprintf("%.1f", avSpeed[0])
+	return fmt.Sprintf("%s%%", avs)
 }
 
-func temperatures(g glyphs) string {
-	output := g.glyphTemp
+func temperatures(asIcon bool) string {
+	output := ""
+	if !asIcon {
+		output += g.glyphTemp
+	}
 	vals := make(map[string]int)
 	temps, _ := host.SensorsTemperatures()
 	for _, temp := range temps {
@@ -52,9 +54,6 @@ func temperatures(g glyphs) string {
 		if temp.SensorKey == "k10temp_tdie_input" {
 			vals["k10temp"] = int(temp.Temperature)
 		}
-		if temp.SensorKey == "amdgpu_mem_input" {
-			vals["amdgpu"] = int(temp.Temperature)
-		}
 	}
 	if v, ok := vals["k10temp"]; ok {
 		output += fmt.Sprint(v)
@@ -63,15 +62,15 @@ func temperatures(g glyphs) string {
 			output += fmt.Sprint(v)
 		}
 	}
-	if v, ok := vals["amdgpu"]; ok {
-		output += "|" + fmt.Sprint(v)
-	}
 	output += "℃"
 	return output
 }
 
-func uptime(g glyphs) string {
-	output := g.glyphUptime
+func uptime(asIcon bool) string {
+	output := ""
+	if !asIcon {
+		output += g.glyphUptime
+	}
 	if t, e := host.Uptime(); e == nil {
 		hh := t / 3600
 		mm := t % 3600 / 60
@@ -82,12 +81,15 @@ func uptime(g glyphs) string {
 	return output
 }
 
-func memory(g glyphs) string {
-	output := g.glyphMem + " "
+func memory(asIcon bool) string {
+	output := ""
+	if !asIcon {
+		output += g.glyphMem + " "
+	}
 	stats, _ := mem.VirtualMemory()
 	used := math.Round(float64(stats.Used)) / 1048576
 	total := math.Round(float64(stats.Total)) / 1048576
-	output += fmt.Sprintf("%.0f", used) + "/" + fmt.Sprintf("%.0f", total) + "MiB"
+	output += fmt.Sprintf("%.0f", used) + "/" + fmt.Sprintf("%.0f", total) + " MiB"
 	return output
 }
 
@@ -107,13 +109,12 @@ func diskUsage(paths *string) string {
 		usage, _ := disk.Usage(path)
 		used := math.Round(float64(usage.Used)) / 1073741824
 		total := math.Round(float64(usage.Total)) / 1073741824
-		output += fmt.Sprintf("%s:%.1f/%.0f", path, used, total)
+		output += fmt.Sprintf("%s:%.1f/%.0f", path, used, total) + " "
 	}
 	output += "GiB"
 	return output
 }
 
-// Settings for now will store glyphs only
 type glyphs struct {
 	graphCPU    []rune
 	glyphCPU    string
@@ -133,34 +134,62 @@ func main() {
 		}
 	}
 	// Glyphs below may be replaced, e.g. "MEM:" instead of ""
-	g := glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
+	g = glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
 
 	componentsPtr := flag.String("c", "gatmnu",
 		`Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar, disk usage by mou(n)tpoints, (t)emperatures, (m)emory, (u)ptime`)
-	cpuDelayPtr := flag.String("d", "450ms", "CPU measurement delay [timeout]")
+	iconPtr := flag.String("i", "", "Returns (i)con path and a single component (a, n, t, m, u) value")
+	cpuDelayPtr := flag.String("d", "900ms", "CPU measurement delay [timeout]")
 	pathsPtr := flag.String("p", "/", "Quotation-delimited, space-separated list of mou(n)tpoints")
+	setPtr := flag.Bool("dark", false, "Use dark icon set")
+
 	flag.Parse()
+	path := "/usr/share/gopsuinfo/icons_light"
+	if *setPtr {
+		path = "/usr/share/gopsuinfo/icons_dark"
+	}
 
 	output := ""
 
-	for _, char := range *componentsPtr {
-		if string(char) == "g" {
-			output += cpuGraph(g, cpuDelayPtr) + " "
+	if *iconPtr != "" {
+		if *iconPtr == "g" {
+			output += cpuGraph(cpuDelayPtr)
 		}
-		if string(char) == "a" {
-			output += cpuAvSpeed(g, cpuDelayPtr) + " "
+		if *iconPtr == "a" {
+			output += cpuAvSpeed(cpuDelayPtr)
+		} else if *iconPtr == "t" {
+			output += path + "/temp.svg\n"
+			output += temperatures(true)
+		} else if *iconPtr == "n" {
+			output += path + "/hdd.svg\n"
+			output += diskUsage(pathsPtr)
+		} else if *iconPtr == "m" {
+			output += path + "/mem.svg\n"
+			output += memory(true)
+		} else if *iconPtr == "u" {
+			output += path + "/up.svg\n"
+			output += uptime(true)
 		}
-		if string(char) == "t" {
-			output += temperatures(g) + " "
-		}
-		if string(char) == "u" {
-			output += uptime(g) + " "
-		}
-		if string(char) == "m" {
-			output += memory(g) + " "
-		}
-		if string(char) == "n" {
-			output += diskUsage(pathsPtr) + " "
+	} else {
+		for _, char := range *componentsPtr {
+			if string(char) == "g" {
+				output += cpuGraph(cpuDelayPtr) + " "
+			}
+			if string(char) == "a" {
+				output += cpuAvSpeed(cpuDelayPtr) + " "
+			}
+			if string(char) == "t" {
+				output += temperatures(false) + " "
+			}
+			if string(char) == "u" {
+				output += uptime(false) + " "
+			}
+			if string(char) == "m" {
+				output += memory(false) + " "
+			}
+			if string(char) == "n" {
+				output += diskUsage(pathsPtr) + " "
+			}
 		}
 	}
 
