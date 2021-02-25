@@ -35,11 +35,16 @@ func cpuGraph(delay *string) string {
 	return bar
 }
 
-func cpuAvSpeed(delay *string) string {
+func cpuAvSpeed(asIcon bool, delay *string) string {
+	output := ""
+	if !asIcon {
+		output += g.glyphCPU
+	}
 	duration, _ := time.ParseDuration(*delay)
 	avSpeed, _ := cpu.Percent(duration, false)
 	avs := fmt.Sprintf("%.1f", avSpeed[0])
-	return fmt.Sprintf("%s%%", avs)
+	output += fmt.Sprintf("%s%%", avs)
+	return output
 }
 
 func temperatures(asIcon bool) string {
@@ -99,8 +104,8 @@ func traffic(asIcon bool) string {
 	t0, _ := net.IOCounters(false)
 	time.Sleep(time.Second)
 	t1, _ := net.IOCounters(false)
-	ul := math.Round(float64(t1[0].BytesSent - t0[0].BytesSent)) / 1024
-	dl := math.Round(float64(t1[0].BytesRecv - t0[0].BytesRecv)) / 1024
+	ul := math.Round(float64(t1[0].BytesSent-t0[0].BytesSent)) / 1024
+	dl := math.Round(float64(t1[0].BytesRecv-t0[0].BytesRecv)) / 1024
 	if asIcon {
 		icon := net_icon(ul, dl)
 		text := fmt.Sprintf("%.2f", ul) + " " + fmt.Sprintf("%.2f", dl) + " kB/s"
@@ -163,8 +168,6 @@ func main() {
 			fmt.Println("Use gopsuinfo list_mountpoints to see available mount points.")
 		}
 	}
-	// Glyphs below may be replaced, e.g. "MEM:" instead of ""
-	g = glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
 
 	componentsPtr := flag.String("c", "gatmnu",
 		`Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar,
@@ -174,8 +177,17 @@ func main() {
 	cpuDelayPtr := flag.String("d", "900ms", "CPU measurement delay [timeout]")
 	pathsPtr := flag.String("p", "/", "Quotation-delimited, space-separated list of mou(n)tpoints")
 	setPtr := flag.Bool("dark", false, "Use dark icon set")
+	textPtr := flag.Bool("t", false, "Just (t)ext, no glyphs")
 
 	flag.Parse()
+
+	if *textPtr {
+		g = glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: ""}
+	} else {
+		// Glyphs below may be replaced, e.g. "MEM:" instead of ""
+		g = glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: " "}
+	}
+
 	path = "/usr/share/gopsuinfo/icons_light"
 	if *setPtr {
 		path = "/usr/share/gopsuinfo/icons_dark"
@@ -188,7 +200,8 @@ func main() {
 			output += cpuGraph(cpuDelayPtr)
 		}
 		if *iconPtr == "a" {
-			output += cpuAvSpeed(cpuDelayPtr)
+			output += path + "/cpu.svg\n"
+			output += cpuAvSpeed(true, cpuDelayPtr)
 		} else if *iconPtr == "t" {
 			output += path + "/temp.svg\n"
 			output += temperatures(true)
@@ -210,7 +223,7 @@ func main() {
 				output += cpuGraph(cpuDelayPtr) + " "
 			}
 			if string(char) == "a" {
-				output += cpuAvSpeed(cpuDelayPtr) + " "
+				output += cpuAvSpeed(false, cpuDelayPtr) + " "
 			}
 			if string(char) == "t" {
 				output += temperatures(false) + " "
