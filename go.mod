@@ -8,4 +8,5 @@ require (
 	github.com/shirou/gopsutil v3.21.1+incompatible
 	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/sys v0.0.0-20210223095934-7937bea0104d // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

@@ -22,6 +22,8 @@ import (
 	"github.com/shirou/gopsutil/net"
 )
 
+const version = "0.1.1"
+
 var g glyphs
 var path string
 
@@ -173,13 +175,19 @@ func main() {
 		`Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar,
 		disk usage by mou(n)tpoints, (t)emperatures,
 		networ(k) traffic, (m)emory, (u)ptime`)
-	iconPtr := flag.String("i", "", "Returns (i)con path and a single component (a, n, t, m, u) value")
-	cpuDelayPtr := flag.String("d", "900ms", "CPU measurement delay [timeout]")
-	pathsPtr := flag.String("p", "/", "Quotation-delimited, space-separated list of mou(n)tpoints")
-	setPtr := flag.Bool("dark", false, "Use dark icon set")
+	iconPtr := flag.String("i", "", "returns (i)con path and a single component (a, n, t, m, u) value")
+	cpuDelayPtr := flag.String("d", "900ms", "CPU measurement (d)elay [timeout]")
+	pathsPtr := flag.String("p", "/", "quotation-delimited, space-separated list of mount(p)oints")
+	setPtr := flag.Bool("dark", false, "use (dark) icon set")
 	textPtr := flag.Bool("t", false, "Just (t)ext, no glyphs")
+	displayVersion := flag.Bool("v", false, "display (v)ersion information")
 
 	flag.Parse()
+
+	if *displayVersion {
+		fmt.Printf("gopsuinfo version %s\n", version)
+		os.Exit(0)
+	}
 
 	if *textPtr {
 		g = glyphs{graphCPU: []rune("_▁▂▃▄▅▆▇███"), glyphCPU: "", glyphMem: "", glyphTemp: "", glyphUptime: ""}
