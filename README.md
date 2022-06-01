@@ -8,10 +8,10 @@ For use with bars like [Waybar](https://github.com/Alexays/Waybar) or [polybar](
 
 `gopsuinfo -c gatmnu`
 
-![gopsuinfo-waybar](http://nwg.pl/Lychee/uploads/big/29020400991f20e10272b4c3c65d37c1.png)
+![image](https://user-images.githubusercontent.com/20579136/171514998-3423165f-5628-4d49-8dde-06801d817993.png)
 
 For panels capable of displaying an icon and text, like [tint2](https://gitlab.com/o9000/tint2)
-or[nwg-panel](https://github.com/nwg-piotr/nwg-panel), you need to define an executor for each component.
+or [nwg-panel](https://github.com/nwg-piotr/nwg-panel), you need to define an executor for each component.
 For instance `gopsuinfo -i m` will return a path to the memory icon, and the current memory usage:
 
 ```text
@@ -19,24 +19,28 @@ For instance `gopsuinfo -i m` will return a path to the memory icon, and the cur
 2103/22008 MiB
 ```
 
-Add all the components you need this way.
+Add all the components you need to this way. Sample output with monochrome icons in nwg-panel:
 
-![gopsuinfo.png](https://scrot.cloud/images/2021/02/24/gopsuinfo.png)
+![image](https://user-images.githubusercontent.com/20579136/171515322-f469d580-72e7-4950-9857-28746e380d6a.png)
 
 ```
 $ gopsuinfo -h
 Use gopsuinfo list_mountpoints to see available mount points.
-Usage of gopsuinfo:
+Usage of bin/gopsuinfo:
   -c string
-    	Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar, disk usage by mou(n)tpoints, (t)emperatures, (m)emory, (u)ptime (default "gatmnu")
+    	Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar,
+    			disk usage by mou(n)tpoints, (t)emperatures,
+    			networ(k) traffic, (m)emory, (u)ptime (default "gatmnu")
   -d string
-    	CPU measurement delay [timeout] (default "900ms")
+    	CPU measurement (d)elay [timeout] (default "900ms")
   -dark
-    	Use dark icon set
+    	use (dark) icon set
   -i string
-    	Returns (i)con path and a single component (a, n, t, m, u) value
+    	returns (i)con path and a single component (a, n, t, m, u) value
   -p string
-    	Quotation-delimited, space-separated list of mou(n)tpoints (default "/")
+    	quotation-delimited, space-separated list of mount(p)oints (default "/")
+  -t	Just (t)ext, no glyphs
+  -v	display (v)ersion information
 ```
 
 ## Installation
