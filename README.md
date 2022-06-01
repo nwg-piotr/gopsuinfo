@@ -1,6 +1,10 @@
 # gopsuinfo
 
-This project is a Go version of my [psuinfo](https://github.com/nwg-piotr/psuinfo) python script, written for educational purposes, and also for better performance. The code only implements these `psuinfo` features which I actually use.
+This program is a part of the [nwg-shell](https://github.com/nwg-piotr/nwg-shell) project.
+
+This project is a Go version of my [psuinfo](https://github.com/nwg-piotr/psuinfo) python script, written for educational purposes, and also for better performance. The code only implements these `psuinfo` features that I actually use.
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/gopsuinfo.svg)](https://repology.org/project/gopsuinfo/versions)
 
 The program uses the [gopsutil](https://github.com/shirou/gopsutil) module, Copyright (c) 2014, WAKAYAMA Shirou.
 
