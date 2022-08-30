@@ -1,9 +1,11 @@
-/*A gopsutil-based command to display customizable system usage info in a single line
-  Copyright (c) 2020-2021 Piotr Miller
-  e-mail: nwg.piotr@gmail.com
-  Project: https://github.com/nwg-piotr/gopsuinfo
-  License: GPL3
-  gopsutil Copyright (c) 2014, WAKAYAMA Shirou, https://github.com/shirou/gopsutil
+/*
+A gopsutil-based command to display customizable system usage info in a single line
+
+	Copyright (c) 2020-2021 Piotr Miller
+	e-mail: nwg.piotr@gmail.com
+	Project: https://github.com/nwg-piotr/gopsuinfo
+	License: GPL3
+	gopsutil Copyright (c) 2014, WAKAYAMA Shirou, https://github.com/shirou/gopsutil
 */
 package main
 
@@ -60,7 +62,7 @@ func temperatures(asIcon bool) string {
 		if temp.SensorKey == "acpitz_input" {
 			vals["acpitz"] = int(temp.Temperature)
 		}
-		if temp.SensorKey == "k10temp_tdie_input" {
+		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
 			vals["k10temp"] = int(temp.Temperature)
 		}
 	}
