@@ -24,7 +24,7 @@ import (
 	"github.com/shirou/gopsutil/net"
 )
 
-const version = "0.1.2"
+const version = "0.1.3"
 
 var g glyphs
 var path string
