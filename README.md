@@ -1,6 +1,8 @@
 # gopsuinfo
 
-This program is a part of the [nwg-shell](https://github.com/nwg-piotr/nwg-shell) project.
+This application is a part of the [nwg-shell](https://nwg-piotr.github.io/nwg-shell) project.
+
+**Contributing:** please read the [general contributing rules for the nwg-shell project](https://nwg-piotr.github.io/nwg-shell/contribution).
 
 This project is a Go version of my [psuinfo](https://github.com/nwg-piotr/psuinfo) python script, written for educational purposes, and also for better performance. The code only implements these `psuinfo` features that I actually use.
 
