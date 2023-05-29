@@ -57,9 +57,10 @@ func temperatures(asIcon bool) string {
 		output += g.glyphTemp
 	}
 	vals := make(map[string]int)
+	vals["acpitz"] = 0
 	temps, _ := host.SensorsTemperatures()
 	for _, temp := range temps {
-		if temp.SensorKey == "acpitz_input" {
+		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
 			vals["acpitz"] = int(temp.Temperature)
 		}
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
