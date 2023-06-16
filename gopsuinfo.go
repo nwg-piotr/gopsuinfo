@@ -64,10 +64,7 @@ func temperatures(asIcon bool) string {
 		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
 			vals["acpitz"] = int(temp.Temperature)
 		}
-		if vals["coretemp"] == 0 && temp.SensorKey == "coretemp_packageid0_input" {
-			vals["coretemp"] = int(temp.Temperature)
-		}
-		if vals["coretemp"] == 0 && temp.SensorKey == "coretemp_core0_input" {
+		if vals["coretemp"] == 0 && temp.SensorKey == "coretemp_packageid0_input" || temp.SensorKey == "coretemp_core0_input" {
 			vals["coretemp"] = int(temp.Temperature)
 		}
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
