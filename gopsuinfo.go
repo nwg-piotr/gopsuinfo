@@ -60,6 +60,7 @@ func temperatures(asIcon bool) string {
 
 	temps, _ := host.SensorsTemperatures()
 	for _, temp := range temps {
+		// Some machines may return multiple sensors of the same name. Let's accept the 1st non-zero temp value.
 		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
 			vals["acpitz"] = int(temp.Temperature)
 		}
