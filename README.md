@@ -2,15 +2,13 @@
 
 This application is a part of the [nwg-shell](https://nwg-piotr.github.io/nwg-shell) project.
 
-**Contributing:** please read the [general contributing rules for the nwg-shell project](https://nwg-piotr.github.io/nwg-shell/contribution).
-
-This project is a Go version of my [psuinfo](https://github.com/nwg-piotr/psuinfo) python script, written for educational purposes, and also for better performance. The code only implements these `psuinfo` features that I actually use.
-
-[![Packaging status](https://repology.org/badge/vertical-allrepos/gopsuinfo.svg)](https://repology.org/project/gopsuinfo/versions)
+This project is a Go version of my [psuinfo](https://github.com/nwg-piotr/psuinfo) python script, written for educational purposes, and also for better 
+performance. The code only implements these `psuinfo` features that I actually use.
 
 The program uses the [gopsutil](https://github.com/shirou/gopsutil) module, Copyright (c) 2014, WAKAYAMA Shirou.
 
-For use with bars like [Waybar](https://github.com/Alexays/Waybar) or [polybar](https://github.com/polybar/polybar), the `gopsuinfo -c <components_string>` is suitable. It prints system information in a single line:
+For use with bars like [Waybar](https://github.com/Alexays/Waybar) or [polybar](https://github.com/polybar/polybar), the `gopsuinfo -c <components_string>` is suitable. It prints 
+system information in a single line:
 
 `gopsuinfo -c gatmnu`
 
@@ -51,7 +49,11 @@ Usage of bin/gopsuinfo:
 
 ## Installation
 
-Clone the repository:
+Install from yoor Linux distribution repository, if possible.
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/gopsuinfo.svg)](https://repology.org/project/gopsuinfo/versions)
+
+Otherwise, clone the repository:
 
 ```
 git clone https://github.com/nwg-piotr/gopsuinfo.git
