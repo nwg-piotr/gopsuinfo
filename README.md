@@ -49,7 +49,7 @@ Usage of bin/gopsuinfo:
 
 ## Installation
 
-Install from yoor Linux distribution repository, if possible.
+Install from your Linux distribution repository, if possible.
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/gopsuinfo.svg)](https://repology.org/project/gopsuinfo/versions)
 
