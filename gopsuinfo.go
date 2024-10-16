@@ -75,10 +75,10 @@ func temperatures(asIcon bool) string {
 	if v, ok := vals["k10temp"]; ok {
 		output += fmt.Sprint(v)
 	} else {
-		if v, ok := vals["acpitz"]; ok {
+		if v, ok := vals["coretemp"]; ok {
 			output += fmt.Sprint(v)
 		} else {
-			if v, ok := vals["coretemp"]; ok {
+			if v, ok := vals["acpitz"]; ok {
 				output += fmt.Sprint(v)
 			}
 		}
