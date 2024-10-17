@@ -71,6 +71,13 @@ func temperatures(asIcon bool) string {
 			vals["k10temp"] = int(temp.Temperature)
 		}
 	}
+	// in case we still have no temperature value, let's try calculating average per-core value
+	//sum := 0
+	//for i, t := range temps {
+	//	key := fmt.Sprintf("coretemp_core%v_input", i)
+	//	val :=
+	//}
+	fmt.Println(temps)
 
 	if v, ok := vals["k10temp"]; ok {
 		output += fmt.Sprint(v)
