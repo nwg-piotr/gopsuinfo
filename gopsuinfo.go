@@ -70,7 +70,7 @@ func temperatures(asIcon bool) string {
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
 			vals["k10temp"] = int(temp.Temperature)
 		}
-		fmt.Println(temp.SensorKey, temp.Temperature, temp.String())
+		fmt.Println(temp.SensorKey, temp.Temperature)
 	}
 	// in case we still have no temperature value, let's try calculating average per-core value
 	//sum := 0
