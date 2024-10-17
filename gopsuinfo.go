@@ -59,7 +59,7 @@ func temperatures(asIcon bool) string {
 	vals := make(map[string]int)
 
 	temps, _ := host.SensorsTemperatures()
-	for _, temp := range temps {
+	for i, temp := range temps {
 		// Some machines may return multiple sensors of the same name. Let's accept the 1st non-zero temp value.
 		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
 			vals["acpitz"] = int(temp.Temperature)
@@ -67,8 +67,8 @@ func temperatures(asIcon bool) string {
 		if vals["coretemp_package0"] == 0 && temp.SensorKey == "coretemp_packageid0_input" {
 			vals["coretemp_package0"] = int(temp.Temperature)
 		}
-		if vals["coretemp_core0"] == 0 && temp.SensorKey == "coretemp_core0_input" {
-			vals["coretemp_core0"] = int(temp.Temperature)
+		if vals[fmt.Sprintf("coretemp_core%v", i)] == 0 && temp.SensorKey == fmt.Sprintf("coretemp_core%v_input", i) {
+			vals[fmt.Sprintf("coretemp_core%v", i)] = int(temp.Temperature)
 		}
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
 			vals["k10temp"] = int(temp.Temperature)
