@@ -67,11 +67,11 @@ func temperatures(asIcon bool) string {
 		if vals["coretemp_packageid0"] == 0 && temp.SensorKey == "coretemp_packageid0_input" {
 			vals["coretemp_packageid0"] = temp.Temperature
 		}
-		if strings.HasPrefix(temp.SensorKey, "coretemp_core") && strings.HasSuffix(temp.SensorKey, "input") {
-			vals[temp.SensorKey] = temp.Temperature
-		}
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
 			vals["k10temp"] = temp.Temperature
+		}
+		if strings.HasPrefix(temp.SensorKey, "coretemp_core") && strings.HasSuffix(temp.SensorKey, "input") {
+			vals[temp.SensorKey] = temp.Temperature
 		}
 		fmt.Println(temp.SensorKey, temp.Temperature)
 	}
@@ -79,7 +79,16 @@ func temperatures(asIcon bool) string {
 		fmt.Println("Key:", key, "Value:", value)
 	}
 	// in case we still have no temperature value, let's try calculating average per-core value
-	//sum := 0.0
+	sum := 0.0
+	div := 0
+	for k, v := range vals {
+		if strings.HasPrefix(k, "coretemp_core") {
+			sum += v
+			div += 1
+		}
+	}
+	avg := sum / float64(div)
+	fmt.Printf("sum = %v, div = %v, avg = %v", sum, div, avg)
 	//for i, t := range temps {
 	//	key := fmt.Sprintf("coretemp_core%v_input", i)
 	//	if u, ok := temps[key]; ok {
