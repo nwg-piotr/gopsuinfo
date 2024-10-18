@@ -70,6 +70,7 @@ func temperatures(asIcon bool) string {
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
 			vals["k10temp"] = temp.Temperature
 		}
+		// grab all per-core values
 		if strings.HasPrefix(temp.SensorKey, "coretemp_core") && strings.HasSuffix(temp.SensorKey, "input") {
 			vals[temp.SensorKey] = temp.Temperature
 		}
