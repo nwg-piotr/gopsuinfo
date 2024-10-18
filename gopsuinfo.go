@@ -59,24 +59,24 @@ func temperatures(asIcon bool) string {
 	vals := make(map[string]int)
 
 	temps, _ := host.SensorsTemperatures()
-	for i, temp := range temps {
+	for _, temp := range temps {
 		// Some machines may return multiple sensors of the same name. Let's accept the 1st non-zero temp value.
-		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
-			vals["acpitz"] = int(temp.Temperature)
-		}
-		if vals["coretemp_packageid0"] == 0 && temp.SensorKey == "coretemp_packageid0_input" {
-			vals["coretemp_packageid0"] = int(temp.Temperature)
-		}
-		if temp.SensorKey == fmt.Sprintf("coretemp_core%v_input", i) {
-			vals[fmt.Sprintf("coretemp_core%v", i)] = int(temp.Temperature)
-		}
+		//if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
+		//	vals["acpitz"] = int(temp.Temperature)
+		//}
+		//if vals["coretemp_packageid0"] == 0 && temp.SensorKey == "coretemp_packageid0_input" {
+		//	vals["coretemp_packageid0"] = int(temp.Temperature)
+		//}
+		//if temp.SensorKey == fmt.Sprintf("coretemp_core%v_input", i) {
+		//	vals[fmt.Sprintf("coretemp_core%v", i)] = int(temp.Temperature)
+		//}
 		if strings.HasSuffix(temp.SensorKey, "input") {
 			vals[temp.SensorKey] = int(temp.Temperature)
 		}
 
-		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
-			vals["k10temp"] = int(temp.Temperature)
-		}
+		//if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
+		//	vals["k10temp"] = int(temp.Temperature)
+		//}
 		fmt.Println(temp.SensorKey, temp.Temperature)
 	}
 	for key, value := range vals {
