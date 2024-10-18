@@ -87,16 +87,16 @@ func temperatures(asIcon bool) string {
 	vals["coretemp_average"] = sum / float64(div)
 
 	if v, ok := vals["k10temp"]; ok {
-		output += fmt.Sprint(v)
+		output += fmt.Sprint(int(math.Round(v)))
 	} else {
 		if v, ok = vals["coretemp_average"]; ok {
 			output += fmt.Sprint(int(math.Round(v)))
 		} else {
 			if v, ok = vals["coretemp_packageid0"]; ok {
-				output += fmt.Sprint(v)
+				output += fmt.Sprint(int(math.Round(v)))
 			} else {
 				if v, ok = vals["acpitz"]; ok {
-					output += fmt.Sprint(v)
+					output += fmt.Sprint(int(math.Round(v)))
 				}
 			}
 		}
