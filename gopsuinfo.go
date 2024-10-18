@@ -1,7 +1,7 @@
 /*
 A gopsutil-based command to display customizable system usage info in a single line
 
-	Copyright (c) 2020-2021 Piotr Miller
+	Copyright (c) 2020-2024 Piotr Miller
 	e-mail: nwg.piotr@gmail.com
 	Project: https://github.com/nwg-piotr/gopsuinfo
 	License: GPL3
@@ -56,30 +56,49 @@ func temperatures(asIcon bool) string {
 	if !asIcon {
 		output += g.glyphTemp
 	}
-	vals := make(map[string]int)
+	vals := make(map[string]float64)
 
 	temps, _ := host.SensorsTemperatures()
 	for _, temp := range temps {
 		// Some machines may return multiple sensors of the same name. Let's accept the 1st non-zero temp value.
 		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
-			vals["acpitz"] = int(temp.Temperature)
+			vals["acpitz"] = temp.Temperature
 		}
-		if vals["coretemp"] == 0 && temp.SensorKey == "coretemp_packageid0_input" || temp.SensorKey == "coretemp_core0_input" {
-			vals["coretemp"] = int(temp.Temperature)
+		if vals["coretemp_packageid0"] == 0 && temp.SensorKey == "coretemp_packageid0_input" {
+			vals["coretemp_packageid0"] = temp.Temperature
 		}
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
-			vals["k10temp"] = int(temp.Temperature)
+			vals["k10temp"] = temp.Temperature
+		}
+		// grab all per-core values
+		if strings.HasPrefix(temp.SensorKey, "coretemp_core") && strings.HasSuffix(temp.SensorKey, "input") {
+			vals[temp.SensorKey] = temp.Temperature
 		}
 	}
 
+	// calculate average per-core value
+	sum := 0.0
+	div := 0
+	for k, v := range vals {
+		if strings.HasPrefix(k, "coretemp_core") {
+			sum += v
+			div += 1
+		}
+	}
+	vals["coretemp_average"] = sum / float64(div)
+
 	if v, ok := vals["k10temp"]; ok {
-		output += fmt.Sprint(v)
+		output += fmt.Sprint(int(math.Round(v)))
 	} else {
-		if v, ok := vals["coretemp"]; ok {
-			output += fmt.Sprint(v)
+		if v, ok = vals["coretemp_average"]; ok {
+			output += fmt.Sprint(int(math.Round(v)))
 		} else {
-			if v, ok := vals["acpitz"]; ok {
-				output += fmt.Sprint(v)
+			if v, ok = vals["coretemp_packageid0"]; ok {
+				output += fmt.Sprint(int(math.Round(v)))
+			} else {
+				if v, ok = vals["acpitz"]; ok {
+					output += fmt.Sprint(int(math.Round(v)))
+				}
 			}
 		}
 	}
