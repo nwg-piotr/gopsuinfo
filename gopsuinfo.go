@@ -88,7 +88,7 @@ func temperatures(asIcon bool) string {
 		}
 	}
 	avg := math.Round(sum / float64(div))
-	fmt.Printf("sum = %v, div = %v, avg = %v", sum, div, avg)
+	fmt.Printf("sum = %v, div = %v, avg = %v\n", sum, div, avg)
 	//for i, t := range temps {
 	//	key := fmt.Sprintf("coretemp_core%v_input", i)
 	//	if u, ok := temps[key]; ok {
