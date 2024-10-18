@@ -68,9 +68,7 @@ func temperatures(asIcon bool) string {
 			vals["coretemp_packageid0"] = int(temp.Temperature)
 		}
 		if vals[fmt.Sprintf("coretemp_core%v", i)] == 0 && temp.SensorKey == fmt.Sprintf("coretemp_core%v_input", i) {
-			if _, ok := vals[fmt.Sprintf("coretemp_core%v", i)]; ok {
-				vals[fmt.Sprintf("coretemp_core%v", i)] = int(temp.Temperature)
-			}
+			vals[fmt.Sprintf("coretemp_core%v", i)] = int(temp.Temperature)
 		}
 		fmt.Println(">>>", fmt.Sprintf("coretemp_core%v_input", i))
 
