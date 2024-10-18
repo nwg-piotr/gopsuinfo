@@ -97,8 +97,12 @@ func temperatures(asIcon bool) string {
 		if v, ok = vals["coretemp_packageid0"]; ok {
 			output += fmt.Sprint(v)
 		} else {
-			if v, ok = vals["acpitz"]; ok {
+			if v, ok = vals["coretemp_average"]; ok {
 				output += fmt.Sprint(v)
+			} else {
+				if v, ok = vals["acpitz"]; ok {
+					output += fmt.Sprint(v)
+				}
 			}
 		}
 	}
