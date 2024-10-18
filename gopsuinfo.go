@@ -75,9 +75,7 @@ func temperatures(asIcon bool) string {
 		}
 		fmt.Println(temp.SensorKey, temp.Temperature)
 	}
-	for key, value := range vals {
-		fmt.Println("Key:", key, "Value:", value)
-	}
+
 	// in case we still have no temperature value, let's try calculating average per-core value
 	sum := 0.0
 	div := 0
@@ -87,19 +85,16 @@ func temperatures(asIcon bool) string {
 			div += 1
 		}
 	}
-	avg := int(math.Round(sum / float64(div)))
-	fmt.Printf("sum = %v, div = %v, avg = %v\n", sum, div, avg)
-	//for i, t := range temps {
-	//	key := fmt.Sprintf("coretemp_core%v_input", i)
-	//	if u, ok := temps[key]; ok {
-	//		sum += t.Temperature
-	//	}
-	//}
+	vals["coretemp_average"] = sum / float64(div)
+
+	for key, value := range vals {
+		fmt.Println("Key:", key, "Value:", value)
+	}
 
 	if v, ok := vals["k10temp"]; ok {
 		output += fmt.Sprint(v)
 	} else {
-		if v, ok = vals["coretemp"]; ok {
+		if v, ok = vals["coretemp_packageid0"]; ok {
 			output += fmt.Sprint(v)
 		} else {
 			if v, ok = vals["acpitz"]; ok {
