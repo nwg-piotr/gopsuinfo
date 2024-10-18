@@ -73,7 +73,6 @@ func temperatures(asIcon bool) string {
 		if strings.HasPrefix(temp.SensorKey, "coretemp_core") && strings.HasSuffix(temp.SensorKey, "input") {
 			vals[temp.SensorKey] = temp.Temperature
 		}
-		fmt.Println(temp.SensorKey, temp.Temperature)
 	}
 
 	// calculate average per-core value
