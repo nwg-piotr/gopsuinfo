@@ -101,7 +101,7 @@ func temperatures(asIcon bool) string {
 				output += fmt.Sprint(v)
 			} else {
 				if v, ok = vals["acpitz"]; ok {
-					output += fmt.Sprint(v)
+					output += fmt.Sprint(int(math.Round(v)))
 				}
 			}
 		}
