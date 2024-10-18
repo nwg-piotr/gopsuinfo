@@ -51,6 +51,14 @@ func cpuAvSpeed(asIcon bool, delay *string) string {
 	return output
 }
 
+func listSensors() {
+	temps, _ := host.SensorsTemperatures()
+	for _, temp := range temps {
+		fmt.Printf("%s %v\n", temp.SensorKey, temp.Temperature)
+	}
+	os.Exit(0)
+}
+
 func temperatures(asIcon bool) string {
 	output := ""
 	if !asIcon {
@@ -213,12 +221,17 @@ func main() {
 	setPtr := flag.Bool("dark", false, "use (dark) icon set")
 	textPtr := flag.Bool("t", false, "Just (t)ext, no glyphs")
 	displayVersion := flag.Bool("v", false, "display (v)ersion information")
+	listTempSensors := flag.Bool("s", false, "list temperature (s)ensors")
 
 	flag.Parse()
 
 	if *displayVersion {
 		fmt.Printf("gopsuinfo version %s\n", version)
 		os.Exit(0)
+	}
+
+	if *listTempSensors {
+		listSensors()
 	}
 
 	if *textPtr {
