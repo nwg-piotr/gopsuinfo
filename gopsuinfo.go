@@ -1,7 +1,7 @@
 /*
 A gopsutil-based command to display customizable system usage info in a single line
 
-	Copyright (c) 2020-2021 Piotr Miller
+	Copyright (c) 2020-2024 Piotr Miller
 	e-mail: nwg.piotr@gmail.com
 	Project: https://github.com/nwg-piotr/gopsuinfo
 	License: GPL3
@@ -67,8 +67,11 @@ func temperatures(asIcon bool) string {
 		if vals["coretemp_packageid0"] == 0 && temp.SensorKey == "coretemp_packageid0_input" {
 			vals["coretemp_packageid0"] = int(temp.Temperature)
 		}
-		if temp.SensorKey == fmt.Sprintf("coretemp_core%d_input", i) {
-			vals[fmt.Sprintf("coretemp_core%d", i)] = int(temp.Temperature)
+		if temp.SensorKey == fmt.Sprintf("coretemp_core%v_input", i) {
+			vals[fmt.Sprintf("coretemp_core%v", i)] = int(temp.Temperature)
+		}
+		if strings.HasSuffix(temp.SensorKey, "input") {
+			vals[temp.SensorKey] = int(temp.Temperature)
 		}
 
 		if temp.SensorKey == "k10temp_tctl_input" || temp.SensorKey == "k10temp_tdie_input" {
