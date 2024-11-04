@@ -70,6 +70,7 @@ func temperatures(asIcon bool, tempSensor string) string {
 
 	temps, _ := host.SensorsTemperatures()
 
+	// temp sensor name given with the -ts flag
 	if tempSensor != "" {
 		for _, temp := range temps {
 			if temp.SensorKey == tempSensor {
@@ -79,6 +80,7 @@ func temperatures(asIcon bool, tempSensor string) string {
 		return fmt.Sprintf("No such sensor as '%s', try the -ls flag", tempSensor)
 	}
 
+	// temp sensor name not given
 	for _, temp := range temps {
 		// Some machines may return multiple sensors of the same name. Let's accept the 1st non-zero temp value.
 		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
