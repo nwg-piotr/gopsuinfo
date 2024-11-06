@@ -236,8 +236,8 @@ func main() {
 	setPtr := flag.Bool("dark", false, "use (dark) icon set")
 	textPtr := flag.Bool("t", false, "Just (t)ext, no glyphs")
 	displayVersion := flag.Bool("v", false, "display (v)ersion information")
-	listTempSensors := flag.Bool("ls", false, "list temperature (s)ensors")
-	tempSensor := flag.String("ts", "", "show temperature for a certain Temperature Sensor (-ls to list available sensors)")
+	listTempSensors := flag.Bool("ls", false, "(l)ist temperature (s)ensors")
+	tempSensor := flag.String("ts", "", "show temperature for a certain (t)emperature (s)ensor (-ls to list available sensors)")
 
 	flag.Parse()
 
