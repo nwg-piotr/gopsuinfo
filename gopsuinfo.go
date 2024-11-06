@@ -61,7 +61,7 @@ func listSensors() {
 	os.Exit(0)
 }
 
-func temperatures(asIcon bool, tempSensor string) string {
+func temperatures(asIcon bool, sensorName string) string {
 	output := ""
 	if !asIcon {
 		output += g.glyphTemp
@@ -71,13 +71,14 @@ func temperatures(asIcon bool, tempSensor string) string {
 	temps, _ := host.SensorsTemperatures()
 
 	// temp sensor name given with the -ts flag
-	if tempSensor != "" {
+	sensorName = strings.TrimSpace(sensorName)
+	if sensorName != "" {
 		for _, temp := range temps {
-			if temp.SensorKey == tempSensor {
+			if temp.SensorKey == sensorName {
 				return fmt.Sprintf("%v℃", int(math.Round(temp.Temperature)))
 			}
 		}
-		return fmt.Sprintf("No such sensor as '%s', try the -ls flag", tempSensor)
+		return fmt.Sprintf("No such sensor as '%s', try the -ls flag", sensorName)
 	}
 
 	// temp sensor name not given
