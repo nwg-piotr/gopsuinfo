@@ -28,9 +28,9 @@ Add all the components you need to this way. Sample output with monochrome icons
 ![image](https://user-images.githubusercontent.com/20579136/171515322-f469d580-72e7-4950-9857-28746e380d6a.png)
 
 ```
-$ gopsuinfo -h
+❯ gopsuinfo -h
 Use gopsuinfo list_mountpoints to see available mount points.
-Usage of bin/gopsuinfo:
+Usage of gopsuinfo:
   -c string
     	Output (c)omponents: (a)vg CPU load, (g)rahical CPU bar,
     			disk usage by mou(n)tpoints, (t)emperatures,
@@ -41,9 +41,13 @@ Usage of bin/gopsuinfo:
     	use (dark) icon set
   -i string
     	returns (i)con path and a single component (a, n, t, m, u) value
+  -ls
+    	(l)ist temperature (s)ensors
   -p string
     	quotation-delimited, space-separated list of mount(p)oints (default "/")
   -t	Just (t)ext, no glyphs
+  -ts string
+    	show temperature for a certain (t)emperature (s)ensor (-ls to list available sensors)
   -v	display (v)ersion information
 ```
 

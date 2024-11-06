@@ -24,7 +24,7 @@ import (
 	"github.com/shirou/gopsutil/net"
 )
 
-const version = "0.1.8"
+const version = "0.1.9"
 
 var g glyphs
 var path string
@@ -51,7 +51,17 @@ func cpuAvSpeed(asIcon bool, delay *string) string {
 	return output
 }
 
-func temperatures(asIcon bool) string {
+func listSensors() {
+	temps, _ := host.SensorsTemperatures()
+	for _, temp := range temps {
+		if strings.HasSuffix(temp.SensorKey, "_input") {
+			fmt.Printf("%s (%v°C)\n", temp.SensorKey, temp.Temperature)
+		}
+	}
+	os.Exit(0)
+}
+
+func temperatures(asIcon bool, sensorName string) string {
 	output := ""
 	if !asIcon {
 		output += g.glyphTemp
@@ -59,6 +69,19 @@ func temperatures(asIcon bool) string {
 	vals := make(map[string]float64)
 
 	temps, _ := host.SensorsTemperatures()
+
+	// temp sensor name given with the -ts flag
+	sensorName = strings.TrimSpace(sensorName)
+	if sensorName != "" {
+		for _, temp := range temps {
+			if temp.SensorKey == sensorName {
+				return fmt.Sprintf("%v℃", int(math.Round(temp.Temperature)))
+			}
+		}
+		return fmt.Sprintf("No such sensor as '%s', try the -ls flag", sensorName)
+	}
+
+	// temp sensor name not given
 	for _, temp := range temps {
 		// Some machines may return multiple sensors of the same name. Let's accept the 1st non-zero temp value.
 		if vals["acpitz"] == 0 && temp.SensorKey == "acpitz_input" {
@@ -213,12 +236,18 @@ func main() {
 	setPtr := flag.Bool("dark", false, "use (dark) icon set")
 	textPtr := flag.Bool("t", false, "Just (t)ext, no glyphs")
 	displayVersion := flag.Bool("v", false, "display (v)ersion information")
+	listTempSensors := flag.Bool("ls", false, "(l)ist temperature (s)ensors")
+	tempSensor := flag.String("ts", "", "show temperature for a certain (t)emperature (s)ensor (-ls to list available sensors)")
 
 	flag.Parse()
 
 	if *displayVersion {
 		fmt.Printf("gopsuinfo version %s\n", version)
 		os.Exit(0)
+	}
+
+	if *listTempSensors {
+		listSensors()
 	}
 
 	if *textPtr {
@@ -244,7 +273,7 @@ func main() {
 			output += cpuAvSpeed(true, cpuDelayPtr)
 		} else if *iconPtr == "t" {
 			output += path + "/temp.svg\n"
-			output += temperatures(true)
+			output += temperatures(true, *tempSensor)
 		} else if *iconPtr == "n" {
 			output += path + "/hdd.svg\n"
 			output += diskUsage(pathsPtr)
@@ -266,7 +295,7 @@ func main() {
 				output += cpuAvSpeed(false, cpuDelayPtr) + " "
 			}
 			if string(char) == "t" {
-				output += temperatures(false) + " "
+				output += temperatures(false, *tempSensor) + " "
 			}
 			if string(char) == "u" {
 				output += uptime(false) + " "
