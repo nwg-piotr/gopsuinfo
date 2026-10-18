@@ -1,5 +1,5 @@
 get:
-	go get github.com/shirou/gopsutil
+	go get github.com/shirou/gopsutil/v3
 
 build:
 	go build -o bin/gopsuinfo gopsuinfo.go
